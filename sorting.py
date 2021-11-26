@@ -217,7 +217,6 @@ def partition(arr,low,high):
 
     return i+1
 def quick(arr,low,high):
-    
     if low < high:
         p = partition(arr,low,high)
 
@@ -226,6 +225,47 @@ def quick(arr,low,high):
 
 
     return arr
+
+def heapify(arr, n, i):
+
+	largest = i # Initialize largest as root
+	left = 2 * i + 1
+	right = 2 * i + 2
+
+	# See if left child of root exists and is
+	# greater than root
+	if left < n and arr[largest] < arr[left]:
+		largest = left
+
+	# See if right child of root exists and is
+	# greater than root
+	if right < n and arr[largest] < arr[right]:
+		largest = right
+
+	# Change root, if needed
+	if largest != i:
+		arr[i], arr[largest] = arr[largest], arr[i] # swap
+
+		# Heapify the root.
+		heapify(arr, n, largest)
+
+def heap(arr):
+    n = len(arr)
+    
+
+	# Build a maxheap.
+    for i in range(n//2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+	# One by one extract elements
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
+
+    return arr
+
+
+    
 
 
 def shell(arr):
@@ -272,6 +312,7 @@ def radix(arr):
         exp *=10
     
     return arr
+
 def bucket(arr):
     #In-Place
     #Use when input is uniformily distributed or floating point values
@@ -312,13 +353,122 @@ def bucket(arr):
     return arr
 
 
+#---------Joke Sorts---------------
+
+def stooge(arr,l,h):
+
+    if l >= h:
+        return
+  
+    # If first element is smaller
+    # than last, swap them
+    if arr[l]>arr[h]:
+        t = arr[l]
+        arr[l] = arr[h]
+        arr[h] = t
+  
+    # If there are more than 2 elements in
+    # the array
+    if h-l + 1 > 2:
+        t = (int)((h-l + 1)/3)
+  
+        # Recursively sort first 2 / 3 elements
+        stooge(arr, l, (h-t))
+  
+        # Recursively sort last 2 / 3 elements
+        stooge(arr, l + t, (h))
+  
+        # Recursively sort first 2 / 3 elements
+        # again to confirm
+        stooge(arr, l, (h-t))
+    
+    return arr
+
+def bogo(arr):
+    #Runtime - O(n!)
+    #Shuffle until array is sorted
+    while not isSorted(arr):
+        for i in range(len(arr)):
+            index = random.randint(i, (len(arr)-1))
+            arr[i],arr[index] = arr[index],arr[i]
+    return arr
+
+#-------------------------------
+def isSorted(arr):
+
+    if len(arr) == 0 or len(arr) == 1:
+        return True
+
+    for i in range(1, len(arr)):
+        if not arr[i] >= arr[i-1]:
+            return False
+
+    return True  
+    
+
+
 def main():
 
     reps = 100
     numbers = []
+
     
+    #---------------------------------------------------------- 
+    
+    for i in range(reps):
+        numbers.append(random.randint(0,100))
+    
+    print("***Heap Sort***")
+    print(numbers)
+    
+    start = time.time()
+    #heap(numbers)
+    print(heap(numbers))
+    end = time.time()
+
+    print("Runtime with {} elements: {}".format(reps,end-start))
+    print()
 
 
+
+
+
+    '''
+
+    #---------------------------------------------------------- 
+
+    for i in range(1000):
+        numbers.append(random.randint(0,100))
+    
+    print("***Stooge Sort***")
+    #print(numbers)
+    
+    start = time.time()
+    stooge(numbers,0, len(numbers)-1)
+    #print(stooge(numbers,0,len(numbers)-1))
+    end = time.time()
+
+    print("Runtime with 1000 elements: {}".format(end-start))
+    print()
+
+    #---------------------------------------------------------- 
+    
+    for i in range(10):
+        numbers.append(random.randint(0,100))
+    
+    print("***Bogo Sort***")
+    print(numbers)
+    
+    start = time.time()
+    #bucket(numbers)
+    print(bogo(numbers))
+    end = time.time()
+
+    print("Runtime with 10 elements: {}".format(end-start))
+    print()
+    
+    #---------------------------------------------------------- 
+    
     for i in range(reps):
         numbers.append(random.randint(0,100))
     
@@ -333,8 +483,8 @@ def main():
     print("Runtime with {} elements: {}".format(reps,end-start))
     print()
 
-
-    ''' 
+    #---------------------------------------------------------- 
+     
     for i in range(reps):
         numbers.append(random.randint(0,100))
     
@@ -350,7 +500,7 @@ def main():
     print()
     
     
-    
+    #---------------------------------------------------------- 
     
     for i in range(reps):
         numbers.append(random.randint(0,100))
